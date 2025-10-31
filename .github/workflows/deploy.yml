@@ -18,25 +18,44 @@ jobs:
           path: ./build
           run_id: ${{ github.event.workflow_run.id }}
 
-      - name: Copy files to Azure VM
-        uses: appleboy/scp-action@v0.1.5
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
-          script: whoami
-          source: "build/*"
-          target: "/var/www/html"
+      # - name: Copy files to Azure VM
+      #   uses: appleboy/scp-action@v0.1.5
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     password: ${{ secrets.PASSWORD }}
+      #     port: ${{ secrets.PORT }}
+      #     script: whoami
+      #     source: "build/*"
+      #     target: "/var/www/html"
 
-      - name: Restart Nginx
-        uses: appleboy/ssh-action@v0.1.10
-      - name: Copy files to Azure VM
+      # - name: Restart Nginx
+      #   uses: appleboy/ssh-action@v0.1.10
+      # - name: Copy files to Azure VM
+      #   uses: appleboy/scp-action@v0.1.5
+      #   with:
+      #     host: ${{ secrets.HOST }}
+      #     username: ${{ secrets.USERNAME }}
+      #     password: ${{ secrets.PASSWORD }}
+      #     port: ${{ secrets.PORT }}
+      #     script: |
+      #       sudo systemctl restart nginx
+      - name: Copy files to temp folder
         uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          source: "build/*"
+          target: "/home/${{ secrets.AZURE_VM_USER }}/build"
+            
+      - name: Move files to Nginx root
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+          key: ${{ secrets.PASSWORD}}
           script: |
+            sudo mv /home/${{ secrets.USERNAME }}/build/* /var/www/html/
             sudo systemctl restart nginx
+            
