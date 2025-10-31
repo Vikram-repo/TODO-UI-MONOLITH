@@ -31,9 +31,12 @@ jobs:
 
       - name: Restart Nginx
         uses: appleboy/ssh-action@v0.1.10
+      - name: Copy files to Azure VM
+        uses: appleboy/scp-action@v0.1.5
         with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          key: ${{ secrets.AZURE_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
           script: |
             sudo systemctl restart nginx
