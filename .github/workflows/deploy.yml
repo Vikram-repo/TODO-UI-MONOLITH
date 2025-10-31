@@ -30,4 +30,5 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
-            sudo systemctl restart nginx
+            sudo systemctl restart nginx \
+            sudo service nginx restart
