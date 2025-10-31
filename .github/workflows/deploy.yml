@@ -43,9 +43,9 @@ jobs:
       - name: Copy files to temp folder
         uses: appleboy/scp-action@v0.1.5
         with:
-          host: ${{ secrets.AZURE_VM_IP }}
-          username: ${{ secrets.AZURE_VM_USER }}
-          key: ${{ secrets.AZURE_SSH_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
           source: "build/*"
           target: "/home/${{ secrets.AZURE_VM_USER }}/build"
             
@@ -54,7 +54,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PASSWORD}}
+          password: ${{ secrets.PASSWORD }}
           script: |
             sudo mv /home/${{ secrets.USERNAME }}/build/* /var/www/html/
             sudo systemctl restart nginx
