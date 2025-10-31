@@ -2,7 +2,7 @@ name: Deploy to Azure VM
 
 on:
   workflow_run:
-    workflows: ["node.js.yml"]   # 👈 build workflow name likho yahan
+    workflows: ["Node.js CI"]   # 👈 build workflow name likho yahan
     types:
       - completed
 
