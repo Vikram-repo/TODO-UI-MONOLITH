@@ -1,0 +1,33 @@
+name: Deploy to Azure VM
+
+on:
+  workflow_dispatch:   # 👈 manually trigger kar sakte ho (Release pipeline)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: todo-ui-build-artifact
+          path: ./build
+
+      - name: Copy files to Azure VM
+        uses: appleboy/scp-action@v0.1.5
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          source: "build/*"
+          target: "/var/www/html"
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.AZURE_VM_IP }}
+          username: ${{ secrets.AZURE_VM_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
+          script: |
+            sudo systemctl restart nginx
