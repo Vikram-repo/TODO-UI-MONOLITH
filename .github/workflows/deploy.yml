@@ -1,14 +1,17 @@
 name: Deploy to Azure VM
 
 on:
-  workflow_dispatch:   # 👈 manually trigger kar sakte ho (Release pipeline)
+  workflow_run:
+    workflows: ["node.js.yml"]   # 👈 build workflow name likho yahan
+    types:
+      - completed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-      - name: Download build artifact
+      - name: Download artifact from previous workflow
         uses: actions/download-artifact@v5
         with:
           name: todo-ui-build-artifact
@@ -30,5 +33,4 @@ jobs:
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
-            sudo systemctl restart nginx \
-            sudo service nginx restart
+            sudo systemctl restart nginx
