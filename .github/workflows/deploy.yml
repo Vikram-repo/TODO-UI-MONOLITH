@@ -16,7 +16,7 @@ jobs:
         with:
           name: todo-ui-build-artifact
           path: ./build
-          run-id: ${{ github.event.workflow_run.id }}
+          run_id: ${{ github.event.workflow_run.id }}
 
       - name: Copy files to Azure VM
         uses: appleboy/scp-action@v0.1.5
