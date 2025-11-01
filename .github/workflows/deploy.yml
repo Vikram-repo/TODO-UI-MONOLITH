@@ -44,6 +44,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           source: "build/*"                     # 👈 सिर्फ अंदर की files भेज रहे हैं
           target: "/home/${{ secrets.USERNAME }}/build-temp"
+          strip_components: 1 
 
       - name: Move build content to /var/www/html
         uses: appleboy/ssh-action@v0.1.10
