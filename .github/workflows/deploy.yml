@@ -18,44 +18,41 @@ jobs:
           path: ./build
           run_id: ${{ github.event.workflow_run.id }}
 
-      # - name: Copy files to Azure VM
+      # - name: Copy files to temp folder
       #   uses: appleboy/scp-action@v0.1.5
       #   with:
       #     host: ${{ secrets.HOST }}
       #     username: ${{ secrets.USERNAME }}
       #     password: ${{ secrets.PASSWORD }}
-      #     port: ${{ secrets.PORT }}
-      #     script: whoami
       #     source: "build/*"
-      #     target: "/var/www/html"
-
-      # - name: Restart Nginx
+      #     target: "/home/${{ secrets.AZURE_VM_USER }}/build"
+            
+      # - name: Move files to Nginx root
       #   uses: appleboy/ssh-action@v0.1.10
-      # - name: Copy files to Azure VM
-      #   uses: appleboy/scp-action@v0.1.5
       #   with:
       #     host: ${{ secrets.HOST }}
       #     username: ${{ secrets.USERNAME }}
       #     password: ${{ secrets.PASSWORD }}
-      #     port: ${{ secrets.PORT }}
       #     script: |
+      #       sudo mv /home/${{ secrets.USERNAME }}/build/* /var/www/html/
       #       sudo systemctl restart nginx
-      - name: Copy files to temp folder
+      - name: Copy files to temp folder    
         uses: appleboy/scp-action@v0.1.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-          source: "build/*"
-          target: "/home/${{ secrets.AZURE_VM_USER }}/build"
-            
-      - name: Move files to Nginx root
+          source: "build/*"                     # 👈 सिर्फ अंदर की files भेज रहे हैं
+          target: "/home/${{ secrets.USERNAME }}/build-temp"
+
+      - name: Move build content to /var/www/html
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           script: |
-            sudo mv /home/${{ secrets.USERNAME }}/build/* /var/www/html/
+            sudo rm -rf /var/www/html/*     
+            sudo mv /home/${{ secrets.USERNAME }}/build-temp/* /var/www/html/
             sudo systemctl restart nginx
-            
+      
