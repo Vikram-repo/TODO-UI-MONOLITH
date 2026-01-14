@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, TextField, Container, Typography, Grid, Card, CardContent, IconButton } from '@mui/material';
+import { Button, TextField, Container, Typography, Card, CardContent, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 import { Box } from '@mui/material';
 
-const API_BASE_URL = 'http://20.39.143.34:8000';
+const API_BASE_URL = 'http://130.131.50.136:8000';
 
 const backgroundImage = process.env.PUBLIC_URL + '/background.jpg';
 
@@ -14,7 +14,7 @@ function TodoApp() {
 
     const fetchTasks = async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/tasks`);
+            const response = await axios.get(`${API_BASE_URL}/api/tasks`);
             setTasks(response.data);
         } catch (error) {
             console.error('Error fetching tasks', error);
@@ -23,7 +23,7 @@ function TodoApp() {
 
     const createTask = async () => {
         try {
-            await axios.post(`${API_BASE_URL}/tasks`, newTask);
+            await axios.post(`${API_BASE_URL}/api/tasks`, newTask);
             fetchTasks();
             setNewTask({ title: '', description: '' });
         } catch (error) {
@@ -33,7 +33,7 @@ function TodoApp() {
 
     const deleteTask = async (taskId) => {
         try {
-            await axios.delete(`${API_BASE_URL}/tasks/${taskId}`);
+            await axios.delete(`${API_BASE_URL}/api/tasks/${taskId}`);
             fetchTasks();
         } catch (error) {
             console.error('Error deleting task', error);
@@ -47,10 +47,10 @@ function TodoApp() {
     return (
         <Box
             style={{
-                backgroundImage: `url(${backgroundImage})`, // Use the imported variable
+                backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
                 backgroundRepeat: 'no-repeat',
-                backgroundAttachment: 'fixed', // Optional, for a fixed background
+                backgroundAttachment: 'fixed',
                 minHeight: '100vh',
             }}
         >
@@ -59,14 +59,16 @@ function TodoApp() {
                     variant="h3"
                     gutterBottom
                     style={{
-                        textAlign: 'center', // Center align text
-                        color: 'white', // Set text color to white
+                        textAlign: 'center',
+                        color: 'white',
                         margin: '8px',
                     }}
                 >
-                    <img src="/devopsinsiderslogo.png" alt="My Logo" />
+                    <span style={{ fontWeight: 'bold', fontSize: '40px' }}>DEVOPS PIONEER</span>
+                    <br />
                     ToDo App
                 </Typography>
+
                 <div>
                     <TextField
                         label="Title"
@@ -77,18 +79,10 @@ function TodoApp() {
                         margin="normal"
                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                         InputProps={{
-                            style: {
-                                color: 'white',       // Set text color to white
-                                borderColor: 'white',  // Set border color to white
-                                '&:hover': {
-                                    borderColor: 'white', // Set border color to white on hover
-                                },
-                            },
+                            style: { color: 'white' }
                         }}
                         InputLabelProps={{
-                            style: {
-                                color: 'white',       // Set label text color to white
-                            },
+                            style: { color: 'white' }
                         }}
                     />
 
@@ -102,18 +96,10 @@ function TodoApp() {
                         margin="normal"
                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                         InputProps={{
-                            style: {
-                                color: 'white',           // Set text color to white
-                                borderColor: 'white',      // Set border color to white
-                                '&:hover': {
-                                    borderColor: 'white',    // Set border color to white on hover
-                                },
-                            },
+                            style: { color: 'white' }
                         }}
                         InputLabelProps={{
-                            style: {
-                                color: 'white',           // Set label text color to white
-                            },
+                            style: { color: 'white' }
                         }}
                     />
 
@@ -127,8 +113,8 @@ function TodoApp() {
                         variant="h4"
                         gutterBottom
                         style={{
-                            textAlign: 'center', // Center align text
-                            color: 'white', // Set text color to white
+                            textAlign: 'center',
+                            color: 'white',
                             margin: '15px',
                         }}
                     >
@@ -137,7 +123,7 @@ function TodoApp() {
 
                     {tasks.map((task) => (
                         <Box key={task.ID} mb={2}>
-                            <Card key={task.ID} variant="elevation">
+                            <Card variant="elevation">
                                 <CardContent>
                                     <Typography variant="h6">{task.Title}</Typography>
                                     <Typography variant="body2">{task.Description}</Typography>
